@@ -70,10 +70,23 @@ ALTER PROFILE pwd_profile LIMIT PASSWORD_VERIFY_FUNCTION verify_password;
 
 -- Unit tests
 CREATE ROLE test_user WITH LOGIN PASSWORD 'test' PROFILE pwd_profile;
+--ERROR:  Password must be at least 12 characters long
+--CONTEXT:  edb-spl function verify_password(character varying,character varying,character varying) line 12 at RAISE
+
 CREATE ROLE test_user WITH LOGIN PASSWORD 'testtesttest' PROFILE pwd_profile;
+--ERROR:  Password must contain at least one digit
+--CONTEXT:  edb-spl function verify_password(character varying,character varying,character varying) line 24 at RAISE
+
 CREATE ROLE test_user WITH LOGIN PASSWORD 'testtesttest1' PROFILE pwd_profile;
+--ERROR:  Password must contain at least one special character
+--CONTEXT:  edb-spl function verify_password(character varying,character varying,character varying) line 30 at RAISE
+
 CREATE ROLE test_user WITH LOGIN PASSWORD 'testtesttest1!' PROFILE pwd_profile;
+--ERROR:  Password must not contain any sequence of 3 consecutive characters from the username
+--CONTEXT:  edb-spl function verify_password(character varying,character varying,character varying) line 38 at RAISE
+
 CREATE ROLE test_user WITH LOGIN PASSWORD 'Thisisapassword1!' PROFILE pwd_profile;
+--CREATE ROLE
 
 -- Limit idle_session_timeout to 15 min
 ALTER SYSTEM SET idle_session_timeout = '15min';
