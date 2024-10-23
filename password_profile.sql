@@ -92,3 +92,8 @@ CREATE ROLE test_user WITH LOGIN PASSWORD 'Thisisapassword1!' PROFILE pwd_profil
 ALTER SYSTEM SET idle_session_timeout = '15min';
 select pg_reload_conf();
 
+-- Lock a user
+alter role test_user account lock;
+
+-- Unlock a user
+alter role test_user account unlock;
